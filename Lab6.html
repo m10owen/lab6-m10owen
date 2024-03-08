@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css"></link>
+</head>
+<body>
+  <form id = "emailForm"> 
+    <h1>Email Validation</h1>
+    <label for="emailAddress">Only Siena Email address:</label>
+    <input type="input" id="emailAddress">
+    <span id="emailError" class="error"></span>
+    <input type = "submit" id="submitButton" for="emailAddress">
+    <script>
+    const BASE_URL = "https://macpro.csis410.com/submit";
+
+        function validateEmail(){
+                let isValid = false;
+                const emailAddress = document.getElementById("emailAddress").value;
+            //set the textContent of emailError as empty string.
+                const emailError = document.getElementById("emailError");
+       
+                if (emailAddress === "" || !emailAddress.includes("@siena.edu")) {
+                    emailError.textContent = "Please enter a valid email address";
+                    console.log(emailError);
+                //set the content in emailError to "Please enter a valid email address";
+                
+                } else {
+                isValid = true;
+                console.log("Email is valid: ", emailAddress);
+            }
+            
+            if(isValid){
+	            submitForm();
+            }
+            
+}
+
+function submitForm(){
+    let url = BASE_URL;
+
+    let params = new FormData();
+    params.append("field",emailAddress.value);
+
+    fetch(url, { method: "POST", body: params})
+    .then(statusCheck)
+    .then((response) => response.text()) //Convert the response to JSON
+
+    .then((data) => updateResults(data))
+    .catch(handleError); 
+
+function updateResults(data){
+    console.log(data);
+}
+
+function handleError(error){
+    console.error(error);
+}
+
+async function statusCheck(res){
+    if(!res.ok) {
+        throw new Error(await res.text());
+    }
+    return res;
+    }
+}
+
+document.getElementById("emailForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    validateEmail(); 
+});
+
+    </script>
+
+  </form>  
+</body>
+</html>
